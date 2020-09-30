@@ -65,12 +65,9 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
-    val a = hours * 3600
-    val b = minutes * 60
-    val sum = a + b + seconds
-    return sum
-}
+
+    fun seconds(hours: Int, minutes: Int, seconds: Int): Int =  hours * 3600 + minutes * 60 + seconds
+
 /**
  * Тривиальная (1 балл)
  *
@@ -111,12 +108,7 @@ fun thirdDigit(number: Int): Int = TODO()
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
-    val a = hoursArrive*60 + minutesArrive
-    val b = hoursDepart*60 + minutesDepart
-    val sum = a - b
-    return sum
-}
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int = ((hoursArrive * 60 + minutesArrive) - (hoursDepart * 60 + minutesDepart))
 
 /**
  * Простая (2 балла)
@@ -133,10 +125,4 @@ fun accountInThreeYears(initial: Int, percent: Int): Double = TODO()
  * Пользователь задает целое трехзначное число (например, 478).
  * Необходимо вывести число, полученное из заданного перестановкой цифр в обратном порядке (например, 874).
  */
-fun numberRevert(number: Int): Int {
-    val a = number % 10 // единицы
-    val b = number / 100 // сотни
-    val c = (number / 10) % 10 // десятки
-    val sum = a * 100 + c * 10 + b
-    return sum
-}
+fun numberRevert(number: Int): Int = ((number % 10) * 100) + (((number / 10) % 10) * 10) + (number / 100)
