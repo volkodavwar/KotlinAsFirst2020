@@ -18,7 +18,8 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean = if ((number / 1000) + (number / 100) % 10 == (number % 10) + ((number / 10) % 10)) true else false
+fun isNumberHappy(number: Int): Boolean =
+    if ((number / 1000) + (number / 100) % 10 == (number % 10) + ((number / 10) % 10)) true else false
 
 /**
  * Простая (2 балла)
@@ -37,7 +38,7 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int = when {
-    (month == 2 && (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0)) -> 29
+    (month == 2 && (year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)) -> 29
     (month == 2) -> 28
     ((month == 1) || (month == 3) || (month == 5) || (month == 7) || (month == 8) || (month == 10) || (month == 12)) -> 31
     else -> 30
