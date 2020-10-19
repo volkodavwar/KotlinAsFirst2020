@@ -72,13 +72,13 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int):Int {
+fun digitNumber(n: Int): Int {
     var c = 0
     var a = n
-    if (n == 0) return(1)
+    if (n == 0) return (1)
     else while (a != 0) {
         a /= 10
-        c ++
+        c++
     }
     return(c)
 }
@@ -107,7 +107,7 @@ fun fib(n: Int): Int {
 fun minDivisor(n: Int): Int {
     var i = 2
     while (n % i != 0) {
-        i ++
+        i++
     }
     return i
 }
@@ -120,7 +120,7 @@ fun minDivisor(n: Int): Int {
 fun maxDivisor(n: Int): Int {
     var i = n - 1
     while (n % i != 0) {
-        i --
+        i--
     }
     return i
 }
@@ -144,14 +144,14 @@ fun maxDivisor(n: Int): Int {
 fun collatzSteps(x: Int): Int {
     var c = 0
     var a = x
-    if(x == 1) return c
+    if (x == 1) return c
 
-    while(a != 1) {
-        if(a == 10) return (c + 6)
-        if(a % 2 == 0) {
+    while (a != 1) {
+        if (a == 10) return (c + 6)
+        if (a % 2 == 0) {
             c++
             a /= 2
-        } else{
+        } else {
             c++
             a = a + a + a + 1
         }
@@ -186,9 +186,10 @@ fun isCoPrime(m: Int, n: Int):Boolean {
     var a = m
     var b = n
     while (a != b) {
-        if (b > a) b -= a else a -= b}
-    if (b == 1) return (true)
-    else return (false)
+        if (b > a) b -= a else a -= b
+    }
+    return if (b == 1) (true)
+    else (false)
 
 }
 
@@ -232,7 +233,7 @@ fun revert(n: Int): Int {
 fun isPalindrome(n: Int): Boolean {
     var a = 0
     var b = 0
-    if (n < 0) return false
+    return if (n < 0) false
     else {
         a = n
         b = 0
@@ -240,7 +241,7 @@ fun isPalindrome(n: Int): Boolean {
             b = 10 * b + a % 10;
             a /= 10
         }
-        if (b == n) return true else return false
+        b == n
     }
 }
 
