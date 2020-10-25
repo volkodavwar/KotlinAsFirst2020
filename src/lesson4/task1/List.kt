@@ -127,7 +127,11 @@ fun abs(v: List<Double>): Double = TODO()
  *
  * Рассчитать среднее арифметическое элементов списка list. Вернуть 0.0, если список пуст
  */
-fun mean(list: List<Double>): Double = TODO()
+fun mean(list: List<Double>): Double {
+    if (list.isEmpty()) return 0.0
+    val sum: Double = list.sum()
+    return sum / list.size
+}
 
 /**
  * Средняя (3 балла)
@@ -137,7 +141,13 @@ fun mean(list: List<Double>): Double = TODO()
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    val sum = list.sum()
+    for (i in 0 until list.size) {
+        list[i] = list[i] - (sum / list.size)
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -177,7 +187,22 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  * Результат разложения вернуть в виде списка множителей, например 75 -> (3, 5, 5).
  * Множители в списке должны располагаться по возрастанию.
  */
-fun factorize(n: Int): List<Int> = TODO()
+fun factorize(n: Int): List<Int> {
+    var num = n
+    val res = mutableListOf<Int>()
+    while ((num % 2) == 0) {
+        res.add(2)
+        num /= 2
+    }
+    var i = 3
+    while (i <= num) {
+        if ((num % i) == 0) {
+            res.add(i)
+            num /= i
+        } else i += 2
+    }
+    return res
+}
 
 /**
  * Сложная (4 балла)
@@ -186,7 +211,10 @@ fun factorize(n: Int): List<Int> = TODO()
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String = TODO()
+fun factorizeToString(n: Int): String {
+    val res = factorize(n)
+    return res.joinToString(separator = "*" )
+}
 
 /**
  * Средняя (3 балла)
