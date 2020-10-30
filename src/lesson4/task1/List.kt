@@ -129,7 +129,7 @@ fun abs(v: List<Double>): Double = TODO()
  */
 fun mean(list: List<Double>): Double {
     if (list.isEmpty()) return 0.0
-    val sum: Double = list.sum()
+    val sum = list.sum()
     return sum / list.size
 }
 
@@ -190,7 +190,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
 fun factorize(n: Int): List<Int> {
     var num = n
     val res = mutableListOf<Int>()
-    while ((num % 2) == 0) {
+    while (num % 2 == 0) {
         res.add(2)
         num /= 2
     }
@@ -213,7 +213,7 @@ fun factorize(n: Int): List<Int> {
  */
 fun factorizeToString(n: Int): String {
     val res = factorize(n)
-    return res.joinToString(separator = "*" )
+    return res.joinToString(separator = "*")
 }
 
 /**
@@ -269,7 +269,21 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    val rom = listOf<String>("I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M")
+    val dec = listOf<Int>(1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000)
+    var i = 13
+    var s = ""
+    var num = n
+    while (num != 0) {
+        while (num >= dec[i]) {
+            num -= dec[i]
+            s += rom[i]
+        }
+        i -= 1
+}
+    return s
+}
 
 /**
  * Очень сложная (7 баллов)
