@@ -2,6 +2,8 @@
 
 package lesson3.task1
 
+import lesson1.task1.sqr
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 // Урок 3: циклы
@@ -287,31 +289,20 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var counter = 0
-    var num = 0
-    var square = 0
-    var c = 1
-    var k = 10
-    while (counter < n) {
-        num++
-        square = num * num
-        c = 1
-        k = 10
-        while (square / k != 0) {
-            k *= 10
-            c++
-        }
-        counter += c
+    var Numb = n
+    var x = 1
+    var dn = 0
+    while (Numb > 0) {
+        dn = sqr(x)
+        Numb -= digitNumber(dn)
+        x++
     }
-    counter -= c
-    k /= 10
-    var result = 1
-    while (counter != n) {
-        result = square / k % 10
-        k /= 10
-        counter++
+    x = dn
+    for (i in 0..abs(Numb)) {
+        dn = x % 10
+        x /= 10
     }
-    return result
+    return dn
 }
 
 /**
