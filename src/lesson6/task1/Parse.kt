@@ -139,7 +139,22 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    var max = -1
+    val parts = jumps.split(" ")
+    val list: MutableList<String> = mutableListOf()
+    for (i in 1 until parts.size) {
+        if ('+' in parts[i]) list += parts[i - 1]
+    }
+    try {
+        for (element in list) {
+            if (element.toInt() > max) max = element.toInt()
+        }
+    } catch (e: NumberFormatException) {
+        return -1
+    }
+    return max
+}
 
 /**
  * Сложная (6 баллов)
