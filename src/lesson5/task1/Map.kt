@@ -222,7 +222,14 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean {
+    val posAnagrams = mutableMapOf<Int, Set<Char>>()
+    for (element in words) {
+        if (posAnagrams[element.length] == element.toSet()) return true
+        else posAnagrams[element.length] = element.toSet()
+    }
+    return false
+}
 
 /**
  * Сложная (5 баллов)
@@ -258,7 +265,30 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "GoodGnome" to setOf()
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val acounted = mutableMapOf<String, MutableSet<String>>()
+
+    fun betweenHandShakes(alreadyWas: MutableSet<String>, Human: String): MutableSet<String> {
+        if (acounted[Human] != null) return acounted[Human]!!
+        if (friends[Human].isNullOrEmpty()) {
+            acounted[Human] = mutableSetOf()
+            return mutableSetOf()
+        }
+        val friendsNumber = mutableSetOf<String>()
+        for (element in friends[Human] ?: error("")) {
+            if (element !in alreadyWas) {
+                friendsNumber.add(element)
+                friendsNumber += betweenHandShakes((alreadyWas + element) as MutableSet<String>, element)
+            }
+        }
+        return friendsNumber
+    }
+    for ((element, _) in friends) {
+        acounted[element] = betweenHandShakes(mutableSetOf(element), element)
+        acounted[element]?.remove(element)
+    }
+    return acounted
+}
 
 /**
  * Сложная (6 баллов)
