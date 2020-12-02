@@ -268,14 +268,14 @@ fun hasAnagrams(words: List<String>): Boolean {
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val acounted = mutableMapOf<String, MutableSet<String>>()
 
-    fun betweenHandShakes(alreadyWas: MutableSet<String>, Human: String): MutableSet<String> {
-        if (acounted[Human] != null) return acounted[Human]!!
-        if (friends[Human].isNullOrEmpty()) {
-            acounted[Human] = mutableSetOf()
+    fun betweenHandShakes(alreadyWas: MutableSet<String>, human: String): MutableSet<String> {
+        if (acounted[human] != null) return acounted[human]!!
+        if (friends[human].isNullOrEmpty()) {
+            acounted[human] = mutableSetOf()
             return mutableSetOf()
         }
         val friendsNumber = mutableSetOf<String>()
-        for (element in friends[Human] ?: error("")) {
+        for (element in friends[human] ?: error("")) {
             if (element !in alreadyWas) {
                 friendsNumber.add(element)
                 friendsNumber += betweenHandShakes((alreadyWas + element) as MutableSet<String>, element)
