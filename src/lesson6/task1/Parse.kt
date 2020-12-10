@@ -118,7 +118,7 @@ fun bestLongJump(jumps: String): Int {
     if (!"$jumps ".matches(Regex("""^((\d+|%|-)\s)*$"""))) return -1
     val parts = Regex("""[ %\-]""").split(jumps)
     var max = -1
-    for (i in parts.indices) {
+    for (i in parts.indices ) {
         if (parts[i] != "" && parts[i].toInt() > max)
             max = parts[i].toInt()
     }
@@ -136,22 +136,7 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int {
-    var max = -1
-    val list = listOf(
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', '%', '-', '+'
-    )
-    val digits = mutableListOf<String>()
-    for (i in jumps) if (i !in list) return max
-    if (Regex("""\d""").find(jumps, 0) != null && Regex("""\+""").find(jumps, 0) != null) {
-        val highJump = jumps.replace("%", "").replace("-", "").split(" ")
-        for (i in highJump.indices)
-            if (highJump[i] == "+") digits.add(highJump[i - 1])
-        for (digit in digits)
-            if (digit.toInt() > max) max = digit.toInt()
-    }
-    return max
-}
+fun bestHighJump(jumps: String): Int = TODO()
 
 /**
  * Сложная (6 баллов)
