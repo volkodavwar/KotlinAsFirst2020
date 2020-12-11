@@ -2,6 +2,7 @@
 
 package lesson7.task1
 
+import lesson3.task1.digitNumber
 import java.io.File
 
 // Урок 7: работа с файлами
@@ -75,8 +76,22 @@ fun deleteMarked(inputName: String, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
-
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val text = File(inputName).readText().toLowerCase()
+    val result = mutableMapOf<String, Int>()
+    for (i in substrings) {
+        result[i] = 0
+    }
+    for (sub in result.keys) {
+        val low = sub.toLowerCase()
+        var lastIndex = text.indexOf(low, 0)
+        while (lastIndex != -1) {
+            result[sub] = result[sub]!! + 1
+            lastIndex = text.indexOf(low, lastIndex + 1)
+        }
+    }
+    return result
+}
 
 /**
  * Средняя (12 баллов)
@@ -424,7 +439,38 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val res = mutableListOf<String>()
+    val nums = mutableListOf<Int>()
+
+    var n = rhv
+    val ans = lhv * rhv
+    while (n > 0) {
+        nums.add(lhv * (n % 10))
+        n /= 10
+    }
+
+    val maxLen = digitNumber(ans) + 1
+    res.add(" ".repeat(maxLen - digitNumber(lhv)) + "$lhv")
+    res.add("*" + " ".repeat(maxLen - digitNumber(rhv) - 1) + "$rhv")
+    res.add("-".repeat(maxLen))
+
+    var first = true
+    var offset = 1
+
+    for (num in nums) {
+        val toAdd = StringBuilder()
+        if (!first) toAdd.append("+").append(" ".repeat(maxLen - offset - digitNumber(num)))
+        else {
+            toAdd.append(" ".repeat(maxLen - offset + 1 - digitNumber(num)))
+            first = false
+        }
+        offset++
+        toAdd.append("$num")
+        res.add(toAdd.toString())
+    }
+    res.add("-".repeat(maxLen))
+    res.add(" $ans")
+    File(outputName).writeText(res.joinToString(separator = "\n"))
 }
 
 
