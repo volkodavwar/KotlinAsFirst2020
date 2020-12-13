@@ -322,8 +322,40 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  *
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
-fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+fun markdownToHtmlSimple(inputName: String, outputName: String)  {
+    val markdown = File(inputName)
+    File(outputName).printWriter().use {
+        it.println("<html>\n" + "<body>\n" + "<p>")
+        val htmlLists = mutableListOf<String>()
+        var previousSum = -1
+        markdown.forEachLine { str ->
+            var i = 0
+            while (str[i] == ' ') i++
+            val sum = i / 4
+            if (previousSum < sum) {
+                if (str[i] == '*') {
+                    it.println("<ul>\n<li>")
+                    htmlLists.add("</ul>")
+                } else {
+                    it.println("<ol>\n<li>")
+                    htmlLists.add("</ol>")
+                }
+            } else if (previousSum == sum) {
+                it.println("</li>\n<li>")
+            } else if (previousSum > sum) {
+                it.println("</li>")
+                val dif = previousSum - sum
+                for (j in 1..dif)
+                    it.println(htmlLists.removeLast() + "\n</li>")
+                it.println("<li>")
+            }
+            it.println(str.replace(Regex("""^((\s*\d*\.)|^(\s*\*))\s*""")) { "" })
+            previousSum = sum
+        }
+        while (htmlLists.isNotEmpty())
+            it.println("</li>\n" + htmlLists.removeLast())
+        it.print("</p>\n" + "</body>\n" + "</html>")
+    }
 }
 
 /**
