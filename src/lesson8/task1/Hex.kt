@@ -2,6 +2,8 @@
 
 package lesson8.task1
 
+import kotlin.math.max
+
 /**
  * Точка (гекс) на шестиугольной сетке.
  * Координаты заданы как в примере (первая цифра - y, вторая цифра - x)
@@ -59,7 +61,7 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      * и другим шестиугольником B с центром в 26 и радиуоом 2 равно 2
      * (расстояние между точками 32 и 24)
      */
-    fun distance(other: Hexagon): Int = TODO()
+    fun distance(other: Hexagon): Int = max(0, center.distance(other.center) - radius - other.radius)
 
     /**
      * Тривиальная (1 балл)
@@ -81,7 +83,8 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Такими являются, например, отрезок 30-34 (горизонталь), 13-63 (прямая диагональ) или 51-24 (косая диагональ).
      * А, например, 13-26 не является "правильным" отрезком.
      */
-    fun isValid(): Boolean = TODO()
+    fun isValid(): Boolean =
+        begin != end && (begin.x == end.x || begin.y == end.y || begin.x + begin.y == end.x + end.y)
 
     /**
      * Средняя (3 балла)
@@ -90,7 +93,14 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Для "правильного" отрезка выбирается одно из первых шести направлений,
      * для "неправильного" -- INCORRECT.
      */
-    fun direction(): Direction = TODO()
+    fun direction(): Direction =
+        if (isValid()) {
+            when {
+                begin.x == end.x -> if (begin.y < end.y) Direction.UP_RIGHT else Direction.DOWN_LEFT
+                begin.y == end.y -> if (begin.x < end.x) Direction.RIGHT else Direction.LEFT
+                else -> if (begin.y < end.y) Direction.UP_LEFT else Direction.DOWN_RIGHT
+            }
+        } else Direction.INCORRECT
 
     override fun equals(other: Any?) =
         other is HexSegment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
@@ -223,7 +233,26 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  *
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
-fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? = TODO()
+fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
+    val way = Direction.values().filter { it != Direction.INCORRECT }
+    val max = maxOf(a.distance(b), b.distance(c), c.distance(a))
+    val min = minOf(a.distance(b), b.distance(c), c.distance(a)) / 2
+    if (a == b && b == c) return Hexagon(a, 0)
+    for (radius in min..max) {
+        var point = a.move(Direction.DOWN_LEFT, radius)
+        for (i in way) {
+            var movement = 0
+            while (movement != radius) {
+                val one = point.distance(b)
+                val two = point.distance(c)
+                if (one == radius && two == radius) return Hexagon(point, radius)
+                point = point.move(i, 1)
+                movement++
+            }
+        }
+    }
+    return null
+}
 
 /**
  * Очень сложная (20 баллов)
