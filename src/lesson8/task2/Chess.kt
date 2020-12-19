@@ -2,6 +2,10 @@
 
 package lesson8.task2
 
+import lesson8.task3.Graph
+import kotlin.math.abs
+
+
 /**
  * Клетка шахматной доски. Шахматная доска квадратная и имеет 8 х 8 клеток.
  * Поэтому, обе координаты клетки (горизонталь row, вертикаль column) могут находиться в пределах от 1 до 8.
@@ -22,7 +26,22 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+    fun notation(): String {
+        return if (inside()) {
+            val a = when (column) {
+                1 -> "a"
+                2 -> "b"
+                3 -> "c"
+                4 -> "d"
+                5 -> "e"
+                6 -> "f"
+                7 -> "g"
+                8 -> "h"
+                else -> ""
+            }
+            "$a$row"
+        } else ""
+    }
 }
 
 /**
@@ -32,7 +51,31 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    try {
+        val d = notation[0].toString()
+        val c = notation[1].toString().toInt()
+        val b = when (d) {
+            "a" -> 1
+            "b" -> 2
+            "c" -> 3
+            "d" -> 4
+            "e" -> 5
+            "f" -> 6
+            "g" -> 7
+            "h" -> 8
+            else -> 0
+        }
+        val s = Square(b, c)
+        return if (s.inside())
+            s
+        else throw IllegalArgumentException()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        throw IllegalArgumentException()
+    }
+
+}
 
 /**
  * Простая (2 балла)
@@ -140,7 +183,37 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: kingMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
-fun kingMoveNumber(start: Square, end: Square): Int = TODO()
+fun kingMoveNumber(start: Square, end: Square): Int {
+    println("\n\nstart = $start")
+    println("end = $end")
+    var razn = abs(start.column - end.column)
+    val raznit = abs(start.row - end.row)
+    println("razn = $razn")
+    println("razn2 = $raznit")
+    val suma = start.column + start.row
+    val summ = end.column + end.row
+    println("suma = $suma")
+    println("summ = $summ")
+    val rok = abs(start.row - start.column)
+    val rokk = abs(end.row - end.column)
+    println("rok = $rok")
+    println("rokk = $rokk")
+    if (start != end) {
+        return if (start.column == end.column) {
+            raznit
+        } else
+            if (start.row == end.row) {
+                razn
+            } else if (suma == summ) {
+                abs(start.column - end.column)
+            } else if (rok == rokk) {
+                abs(end.column - start.column)
+            } else {
+                if (razn > raznit) razn else raznit
+            }
+    }
+    return 0
+}
 
 /**
  * Сложная (5 баллов)
@@ -181,7 +254,11 @@ fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightMoveNumber(start: Square, end: Square): Int {
+    require(start.inside() && end.inside())
+    if (start == end) return 0
+    return knightTrajectory(start, end).size - 1
+}
 
 /**
  * Очень сложная (10 баллов)
@@ -203,4 +280,28 @@ fun knightMoveNumber(start: Square, end: Square): Int = TODO()
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun connectionGeneration(): Graph {
+    val board = Graph()
+    for (col in 1..8)
+        for (row in 1..8)
+            board.addVertex(Square(col, row).notation())
+    val adjacent =
+        listOf(Pair(1, 2), Pair(-1, -2), Pair(2, 1), Pair(-2, -1), Pair(-1, 2), Pair(1, -2), Pair(2, -1), Pair(-2, 1))
+    for (i in 1..8)
+        for (j in 1..8)
+            for ((dX, dY) in adjacent) {
+                val nextHop = Square(i + dX, j + dY)
+                if (nextHop.row in 1..8 && nextHop.column in 1..8) board.connect(
+                    Square(i, j).notation(),
+                    nextHop.notation()
+                )
+            }
+    return board
+}
+
+fun knightTrajectory(start: Square, end: Square): List<Square> {
+    require(start.inside() && end.inside())
+    if (start == end) return listOf(start)
+    val board = connectionGeneration()
+    return board.path(start.notation(), end.notation())
+}

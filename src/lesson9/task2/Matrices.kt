@@ -2,8 +2,10 @@
 
 package lesson9.task2
 
+import lesson9.task1.Cell
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
+import kotlin.math.max
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -60,7 +62,38 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    val res = createMatrix(height, width, 0)
+    var numberToAdd = 1
+    val rowConstraint = width - 1
+    val colConstraint = height - 1
+    var col = 0
+    var row = 0
+    res[col, row]++
+    while (numberToAdd < width * height) {
+        while (row < rowConstraint && res[col, row + 1] == 0) {
+            row++
+            numberToAdd++
+            res[col, row] = numberToAdd
+        }
+        while (col < colConstraint && res[col + 1, row] == 0) {
+            col++
+            numberToAdd++
+            res[col, row] = numberToAdd
+        }
+        while (row > 0 && res[col, row - 1] == 0) {
+            row--
+            numberToAdd++
+            res[col, row] = numberToAdd
+        }
+        while (col > 0 && res[col - 1, row] == 0) {
+            col--
+            numberToAdd++
+            res[col, row] = numberToAdd
+        }
+    }
+    return res
+}
 
 /**
  * Сложная (5 баллов)
@@ -76,7 +109,19 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val result = createMatrix(height, width, 0)
+    var res = 0
+    while (res != max(height, width)) {
+        res++
+        for (row in (res - 1)..(height - res)) {
+            for (column in (res - 1)..(width - res)) {
+                result[row, column] = res
+            }
+        }
+    }
+    return result
+}
 
 /**
  * Сложная (5 баллов)
@@ -91,7 +136,28 @@ fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
  * 10 13 16 18
  * 14 17 19 20
  */
-fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSnake(height: Int, width: Int): Matrix<Int> {
+    val res = createMatrix(height, width, 0)
+    var currentRow = 0
+    var currentColumn = 0
+
+    for (i in 1..height * width) {
+        res[currentRow, currentColumn] = i
+        currentColumn -= 1
+        currentRow += 1
+
+        if (currentColumn < 0 || currentRow > height - 1) {
+            val x = currentColumn
+            currentColumn = if (currentRow + x + 1 < width - 1) currentRow + x + 1
+            else width - 1
+            currentRow = when {
+                currentRow < width - x - 2 -> 0
+                else -> currentRow - width + x + 2
+            }
+        }
+    }
+    return res
+}
 
 /**
  * Средняя (3 балла)
@@ -155,7 +221,28 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+    val list = mutableListOf<Int>()
+    val rows = mutableListOf<Int>()
+    val columns = mutableListOf<Int>()
+    for (r in 0 until matrix.height) {
+        for (c in 0 until matrix.width) {
+            list.add(matrix[r, c])
+        }
+        if (list.count { it == 0 } == matrix.width)
+            rows.add(r)
+        list.clear()
+    }
+    for (c in 0 until matrix.width) {
+        for (r in 0 until matrix.height) {
+            list.add(matrix[r, c])
+        }
+        if (list.count { it == 0 } == matrix.height)
+            columns.add(c)
+        list.clear()
+    }
+    return Holes(rows, columns)
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице

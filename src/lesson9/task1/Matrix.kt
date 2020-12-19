@@ -44,32 +44,53 @@ interface Matrix<E> {
  * height = высота, width = ширина, e = чем заполнить элементы.
  * Бросить исключение IllegalArgumentException, если height или width <= 0.
  */
-fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> = TODO()
+fun <E> transpose(matrix: Matrix<E>): Matrix<E> {
+    if (matrix.width < 1 || matrix.height < 1) return matrix
+    val result = createMatrix(height = matrix.width, width = matrix.height, e = matrix[0, 0])
+    for (i in 0 until matrix.width) {
+        for (j in 0 until matrix.height) {
+            result[i, j] = matrix[j, i]
+        }
+    }
+    return result
+}
+
+fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> = MatrixImpl(height, width, e)
 
 /**
  * Средняя сложность (считается двумя задачами в 3 балла каждая)
  *
  * Реализация интерфейса "матрица"
  */
-class MatrixImpl<E> : Matrix<E> {
-    override val height: Int = TODO()
+class MatrixImpl<E>(override val height: Int, override val width: Int, default: E) : Matrix<E> {
+    init {
+        require(height > 0) { "Incorrect height = $height" }
+        require(width > 0) { "Incorrect width = $width" }
+    }
 
-    override val width: Int = TODO()
+    private val info = List(height) { MutableList(width) { default } }
 
-    override fun get(row: Int, column: Int): E = TODO()
+    override fun get(row: Int, column: Int): E = info[row][column]
 
-    override fun get(cell: Cell): E = TODO()
+    override fun get(cell: Cell): E = info[cell.row][cell.column]
+
+    fun rowToList(row: Int): List<E> = info[row]
 
     override fun set(row: Int, column: Int, value: E) {
-        TODO()
+        info[row][column] = value
     }
 
     override fun set(cell: Cell, value: E) {
-        TODO()
+        set(cell.row, cell.column, value)
     }
 
-    override fun equals(other: Any?) = TODO()
+    override fun equals(other: Any?) =
+        other is MatrixImpl<*> &&
+                height == other.height &&
+                width == other.width &&
+                info == other.info
 
-    override fun toString(): String = TODO()
+    override fun hashCode(): Int = info.hashCode()
+
+    override fun toString(): String = info.joinToString { it.joinToString() }
 }
-

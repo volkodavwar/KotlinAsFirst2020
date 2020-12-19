@@ -1,5 +1,7 @@
 package lesson8.task3
 
+import lesson8.task2.Square
+import lesson8.task2.square
 import java.util.*
 
 class Graph {
@@ -65,7 +67,29 @@ class Graph {
             val min = start.neighbors
                 .filter { it !in visited }
                 .mapNotNull { dfs(it, finish, visited + start) }
-                .min()
+                .minOrNull()
             if (min == null) null else min + 1
         }
+
+    // Slightly adjusted BFS.
+    fun path(start: String, finish: String) = pathfinder(this[start], this[finish])
+
+    private fun pathfinder(start: Vertex, finish: Vertex): List<Square> {
+        val queue = ArrayDeque<Vertex>()
+        queue.add(start)
+        val visited = mutableMapOf(start to emptyList<Square>())
+        visited[start] = listOf(square(start.name))
+        while (queue.isNotEmpty()) {
+            val next = queue.poll()
+            val distance = visited[next]!!
+            if (next == finish) return distance
+            for (neighbor in next.neighbors) {
+                if (neighbor in visited) continue
+                val pathTracker = distance + square(neighbor.name)
+                visited[neighbor] = pathTracker
+                queue.add(neighbor)
+            }
+        }
+        return emptyList()
+    }
 }
