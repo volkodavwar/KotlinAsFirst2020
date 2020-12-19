@@ -159,33 +159,39 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    val outputStream = File(outputName).bufferedWriter()
-    val text = File(inputName).readLines()
-    val maxLineLength = text.map { it.trim().length }.max()
-    for (line in text.map { it.trim() }) {
-        var currentLine = ""
-        val words = line.split(" ").toMutableList()
-        currentLine += words[0]
-        if (words.size > 1) {
-            for (i in 1 until words.size) {
-                if (maxLineLength != null) {
-                    for (j in 0..((maxLineLength - line.length) / (words.size - 1))) {
-                        words[i] = " " + words[i]
-                    }
-                }
-            }
-            if (maxLineLength != null) {
-                for (i in 1..((maxLineLength - line.length) % (words.size - 1))) {
-                    words[i] = " " + words[i]
-                }
-            }
-            for (i in 1 until words.size) {
-                currentLine += words[i]
+    val lines = File(inputName).readLines().map {
+        it.trim().replace(Regex("\\s+"), " ")
+    }
+    val resList = mutableListOf<String>()
+    var sumOfAdded = 0
+    var longLen = 0
+    var numberToAdd = 0
+    val build = StringBuilder()
+    for (line in lines) {
+        resList.add(line)
+        if (line.length > longLen) longLen = line.length
+    }
+    for (line in resList) {
+        val wordList = line.split(" ").toMutableList()
+        var outputString = ""
+        if ((line.length == longLen) || (wordList.size <= 1)) {
+            build.append(line)
+        } else {
+            val charLength = Regex(""" """).replace(line, "").length
+            outputString = wordList[wordList.size - 1]
+            for (word in wordList.size - 2 downTo 0) {
+                sumOfAdded += numberToAdd
+                numberToAdd = (longLen - charLength - sumOfAdded) / (word + 1)
+                outputString =
+                    wordList[word].padEnd(numberToAdd + wordList[word].length).plus(outputString)
             }
         }
-        outputStream.write(currentLine + "\n")
+        sumOfAdded = 0
+        numberToAdd = 0
+        build.append(outputString + '\n')
+
     }
-    outputStream.close()
+    File(outputName).writeText(build.toString())
 }
 
 /**
