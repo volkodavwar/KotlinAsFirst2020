@@ -110,13 +110,13 @@ data class Segment(val begin: Point, val end: Point) {
  */
 fun diameter(vararg points: Point): Segment {
     require(points.size >= 2)
-    var result = Segment(Point(0.0, 0.0), Point(0.0, 0.0))
+    var res = Segment(Point(0.0, 0.0), Point(0.0, 0.0))
     for (i in points.indices) {
         for (n in i + 1 until points.size)
-            if (points[i].distance(points[n]) >= result.begin.distance(result.end))
-                result = Segment(points[i], points[n])
+            if (points[i].distance(points[n]) >= res.begin.distance(res.end))
+                res = Segment(points[i], points[n])
     }
-    return result
+    return res
 }
 
 /**
@@ -185,9 +185,9 @@ fun lineByPoints(a: Point, b: Point): Line = TODO()
  * Построить серединный перпендикуляр по отрезку или по двум точкам
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
-    val desirableAngle = atan((a.y - b.y) / (a.x - b.x)) + PI / 2
-    val applicationPoint = Point((b.x + a.x) / 2, (b.y + a.y) / 2)
-    return Line(applicationPoint, desirableAngle % PI)
+    val desAng = atan((a.y - b.y) / (a.x - b.x)) + PI / 2
+    val appPoint = Point((b.x + a.x) / 2, (b.y + a.y) / 2)
+    return Line(appPoint, desAng % PI)
 }
 
 /**
@@ -214,9 +214,9 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    val circleCenter = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
-    val circleRadius = circleCenter.distance(a)
-    return Circle(circleCenter, circleRadius)
+    val circleCen = bisectorByPoints(a, b).crossPoint(bisectorByPoints(b, c))
+    val circleRadius = circleCen.distance(a)
+    return Circle(circleCen, circleRadius)
 }
 
 /**
@@ -231,14 +231,14 @@ fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
  * соединяющий две самые удалённые точки в данном множестве.
  */
 fun minContainingCircle(vararg points: Point): Circle {
-    val pointsList = points.distinct()
-    require(pointsList.isNotEmpty()) { "at least one point is required" }
-    if (pointsList.size == 1) return Circle(pointsList.first(), 0.0)
-    val diameter = diameter(*points)
-    val a = diameter.begin
-    val b = diameter.end
-    val resultCircle = circleByDiameter(diameter)
-    val c = pointsList.filter { it != a && it != b }.maxByOrNull { it.distance(resultCircle.center) }
+    val pointsL = points.distinct()
+    require(pointsL.isNotEmpty()) { "at least one point is required" }
+    if (pointsL.size == 1) return Circle(pointsL.first(), 0.0)
+    val diam = diameter(*points)
+    val a = diam.begin
+    val b = diam.end
+    val resultCircle = circleByDiameter(diam)
+    val c = pointsL.filter { it != a && it != b }.maxByOrNull { it.distance(resultCircle.center) }
     return if (!resultCircle.contains(c ?: a)) {
         circleWithThreePoints(a, b, c!!)
     } else {

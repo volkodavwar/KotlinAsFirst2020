@@ -503,32 +503,28 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    val res = mutableListOf<String>()
     val nums = mutableListOf<Int>()
-
-    var n = rhv
+    val res = mutableListOf<String>()
     val ans = lhv * rhv
+    var n = rhv
     while (n > 0) {
         nums.add(lhv * (n % 10))
         n /= 10
     }
-
     val maxLen = digitNumber(ans) + 1
     res.add(" ".repeat(maxLen - digitNumber(lhv)) + "$lhv")
     res.add("*" + " ".repeat(maxLen - digitNumber(rhv) - 1) + "$rhv")
     res.add("-".repeat(maxLen))
-
+    var off = 1
     var first = true
-    var offset = 1
-
     for (num in nums) {
         val toAdd = StringBuilder()
-        if (!first) toAdd.append("+").append(" ".repeat(maxLen - offset - digitNumber(num)))
+        if (!first) toAdd.append("+").append(" ".repeat(maxLen - off - digitNumber(num)))
         else {
-            toAdd.append(" ".repeat(maxLen - offset + 1 - digitNumber(num)))
+            toAdd.append(" ".repeat(maxLen - off + 1 - digitNumber(num)))
             first = false
         }
-        offset++
+        off++
         toAdd.append("$num")
         res.add(toAdd.toString())
     }
