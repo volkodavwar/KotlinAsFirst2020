@@ -4,6 +4,7 @@ package lesson7.task1
 
 import lesson3.task1.digitNumber
 import java.io.File
+import java.util.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -430,41 +431,39 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlLists(inputName: String, outputName: String) {
-    val markdown = File(inputName)
-    File(outputName).printWriter().use {
-        it.println("<html>\n" + "<body>\n" + "<p>")
-        val htmlLists = mutableListOf<String>()
-        var previousSum = -1
-        markdown.forEachLine { str ->
-            var i = 0
-            while (str[i] == ' ') i++
-            val sum = i / 4
-            if (previousSum < sum) {
-                if (str[i] == '*') {
-                    it.println("<ul>\n<li>")
-                    htmlLists.add("</ul>")
-                } else {
-                    it.println("<ol>\n<li>")
-                    htmlLists.add("</ol>")
-                }
-            } else if (previousSum == sum) {
-                it.println("</li>\n<li>")
-            } else if (previousSum > sum) {
-                it.println("</li>")
-                val dif = previousSum - sum
-                for (j in 1..dif)
-                    it.println(htmlLists.removeLast() + "\n</li>")
-                it.println("<li>")
+    val lines = File(inputName).readLines()
+    val builder = StringBuilder()
+    val stack = Stack<String>()
+    var previousOffset = -10
+    val offsetTemplate = Regex("    ")
+    builder.append("<html><body><p>")
+    for (line in lines) {
+        val currentOffset = offsetTemplate.findAll(line).count()
+        val modifiedLine = Regex(" ").split(line.trim(), 2) // Preceding symbol - Text.
+        val ulDetector = modifiedLine[0] == "*"
+        val lineContents = (modifiedLine.toMutableList().removeAt(1))
+        if (currentOffset > previousOffset) {
+            if (ulDetector) {
+                builder.append("<ul>")
+                stack.push("</ul>")
+            } else {
+                builder.append("<ol>")
+                stack.push("</ol>")
             }
-            it.println(str.replace(Regex("""^((\s*\d*\.)|^(\s*\*))\s*""")) { "" })
-            previousSum = sum
-        }
-        while (htmlLists.isNotEmpty())
-            it.println("</li>\n" + htmlLists.removeLast())
-        it.print("</p>\n" + "</body>\n" + "</html>")
+        } else if (currentOffset == previousOffset) builder.append(stack.pop())
+        else
+            for (i in 1..3)
+                builder.append(stack.pop())
+        previousOffset = currentOffset
+        builder.append("<li>")
+        builder.append(lineContents)
+        stack.push("</li>")
     }
+    while (stack.isNotEmpty())
+        builder.append(stack.pop())
+    builder.append("</p></body></html>")
+    File(outputName).writeText(builder.toString())
 }
-
 /**
  * Очень сложная (30 баллов)
  *

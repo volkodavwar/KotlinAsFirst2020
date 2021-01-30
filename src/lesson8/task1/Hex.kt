@@ -2,6 +2,7 @@
 
 package lesson8.task1
 
+import kotlin.math.abs
 import kotlin.math.max
 
 /**
@@ -38,7 +39,7 @@ data class HexPoint(val x: Int, val y: Int) {
      * Расстояние вычисляется как число единичных отрезков в пути между двумя гексами.
      * Например, путь межу гексами 16 и 41 (см. выше) может проходить через 25, 34, 43 и 42 и имеет длину 5.
      */
-    fun distance(other: HexPoint): Int = TODO()
+    fun distance(other: HexPoint): Int = (abs(x - other.x) + abs(y - other.y) + abs(x + y - other.x - other.y)) / 2
 
     override fun toString(): String = "$y.$x"
 }
@@ -165,7 +166,16 @@ enum class Direction {
  * 35, direction = UP_LEFT, distance = 2 --> 53
  * 45, direction = DOWN_LEFT, distance = 4 --> 05
  */
-fun HexPoint.move(direction: Direction, distance: Int): HexPoint = TODO()
+fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
+    if (direction == Direction.RIGHT) return HexPoint(x + distance, y)
+    if (direction == Direction.UP_RIGHT) return HexPoint(x, y + distance)
+    if (direction == Direction.UP_LEFT) return HexPoint(x - distance, y + distance)
+    if (direction == Direction.LEFT) return HexPoint(x - distance, y)
+    if (direction == Direction.DOWN_LEFT) return HexPoint(x, y - distance)
+    if (direction == Direction.DOWN_RIGHT) return HexPoint(x + distance, y - distance)
+    throw IllegalArgumentException()
+
+}
 
 /**
  * Сложная (5 баллов)
