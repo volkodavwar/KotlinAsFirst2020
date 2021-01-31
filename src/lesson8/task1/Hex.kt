@@ -199,31 +199,21 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     var x = from.x
     var y = from.y
     val result = mutableListOf(from)
-    while (x > to.x && y < to.y) {
-        x--
-        y++
-        result.add(HexPoint(x, y))
-    }
-    while (x < to.x && y > to.y) {
-        x++
-        y--
-        result.add(HexPoint(x, y))
-    }
-    while (y > to.y) {
-        y--
-        result.add(HexPoint(x, y))
-    }
-    while (x > to.x) {
-        x--
-        result.add(HexPoint(x, y))
-    }
-    while (x < to.x) {
-        x++
-        result.add(HexPoint(x, y))
-    }
-    while (y < to.y) {
-        y++
-        result.add(HexPoint(x, y))
+    while (x != to.x || y != to.y) {
+        if (x > to.x) {
+            x--
+            result.add(HexPoint(x, y))
+        } else if (x < to.x) {
+            x++
+            result.add(HexPoint(x, y))
+        }
+        if (y > to.y) {
+            y--
+            result.add(HexPoint(x, y))
+        } else if (y < to.y) {
+            y++
+            result.add(HexPoint(x, y))
+        }
     }
     return result
 }
