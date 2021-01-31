@@ -247,10 +247,12 @@ fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
     var result = Hexagon(a, 0)
     val maxRadius = maxOf(a.distance(b), a.distance(c), b.distance(c))
     val maxX = maxOf(a.x, b.x, c.x)
-    val maxY = maxOf(a.y, b.y, c.y)
+    val minX = maxOf(a.x, b.x, c.x)
+    val maxY = minOf(a.y, b.y, c.y)
+    val minY = minOf(a.y, b.y, c.y)
     if (a == b && b == c) return result
-    for (i in 0..maxX + maxRadius) {
-        for (j in 0..maxY + maxRadius) {
+    for (i in minX - maxRadius..maxX + maxRadius) {
+        for (j in minY - maxRadius..maxY + maxRadius) {
             val point = HexPoint(i, j)
             if (point.distance(a) == point.distance(b) && point.distance(c) == point.distance(b)) {
                 val radius = point.distance(a)
