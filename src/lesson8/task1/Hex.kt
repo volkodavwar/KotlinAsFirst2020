@@ -244,24 +244,21 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
  * Если все три точки совпадают, вернуть шестиугольник нулевого радиуса с центром в данной точке.
  */
 fun hexagonByThreePoints(a: HexPoint, b: HexPoint, c: HexPoint): Hexagon? {
-    val way = Direction.values().filter { it != Direction.INCORRECT }
-    val max = maxOf(a.distance(b), b.distance(c), c.distance(a))
-    val min = minOf(a.distance(b), b.distance(c), c.distance(a)) / 2
-    if (a == b && b == c) return Hexagon(a, 0)
-    for (radius in min..max) {
-        var point = a.move(Direction.DOWN_LEFT, radius)
-        for (i in way) {
-            var movement = 0
-            while (movement != radius) {
-                val one = point.distance(b)
-                val two = point.distance(c)
-                if (one == radius && two == radius) return Hexagon(point, radius)
-                point = point.move(i, 1)
-                movement++
+    var result = Hexagon(a, 0)
+    val maxRadius = maxOf(a.distance(b), a.distance(c), b.distance(c))
+    val maxX = maxOf(a.x, b.x, c.x)
+    val maxY = maxOf(a.y, b.y, c.y)
+    if (a == b && b == c) return result
+    for (i in 0..maxX + maxRadius) {
+        for (j in 0..maxY + maxRadius) {
+            val point = HexPoint(i, j)
+            if (point.distance(a) == point.distance(b) && point.distance(c) == point.distance(b)) {
+                val radius = point.distance(a)
+                if (result.radius == 0 || result.radius > radius) result = Hexagon(point, radius)
             }
         }
     }
-    return null
+    return if (result.radius == 0) null else result
 }
 
 /**
