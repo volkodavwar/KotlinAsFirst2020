@@ -200,12 +200,14 @@ fun pathBetweenHexes(from: HexPoint, to: HexPoint): List<HexPoint> {
     var y = from.y
     val result = mutableListOf(from)
     while (x != to.x || y != to.y) {
-        if (x > to.x && y < to.y) result.add(HexPoint(--x, ++y))
-        if (x < to.x && y > to.y) result.add(HexPoint(++x,--y))
-        if (x > to.x) result.add(HexPoint(--x, y))
-        if (x < to.x) result.add(HexPoint(++x, y))
-        if (y > to.y) result.add(HexPoint(x, --y))
-        if (y < to.y) result.add(HexPoint(x, ++y))
+        when {
+            x > to.x && y < to.y -> result.add(HexPoint(--x, ++y))
+            x < to.x && y > to.y -> result.add(HexPoint(++x, --y))
+            x > to.x -> result.add(HexPoint(--x, y))
+            x < to.x -> result.add(HexPoint(++x, y))
+            y > to.y -> result.add(HexPoint(x, --y))
+            y < to.y -> result.add(HexPoint(x, ++y))
+        }
     }
     return result
 }
